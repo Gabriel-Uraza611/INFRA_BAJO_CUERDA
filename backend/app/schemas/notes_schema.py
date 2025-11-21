@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 from typing import Optional
 from datetime import datetime
 from enum import Enum
@@ -16,7 +16,8 @@ class NoteCreate(BaseModel):
     posx: float
     posy: float
 
-    @validator('color')
+    @field_validator('color')
+    @classmethod
     def validate_color(cls, v):
         import re
         if not isinstance(v, str):
@@ -34,7 +35,8 @@ class NoteUpdate(BaseModel):
     posx: Optional[float] = None
     posy: Optional[float] = None
 
-    @validator('color')
+    @field_validator('color')
+    @classmethod
     def validate_color(cls, v):
         if v is None:
             return v

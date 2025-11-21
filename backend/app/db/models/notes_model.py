@@ -15,7 +15,7 @@ class NoteModel(Base):
     posx = Column(Float, default=0)
     posy = Column(Float, default=0)
 
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    creation_date = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     # foreign key para el usuario

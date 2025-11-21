@@ -1,35 +1,52 @@
-from fastapi import APIRouter, Depends
+# backend/app/routers/user_routes.py
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from app.core.security import hash_password
 from app.db.models import user_model
 from app.schemas.user_schema import UserRegister, UserLogin, UserResponse
 from app.db.database import get_db
 from typing import List
 
-
 router = APIRouter(
-    prefix="/user",
+    prefix="/users",
     tags=["Users"]
 )
 
-# Obtener Usuarios en la db
-@router.get("/get_users", response_model=List[UserResponse])
+@router.get("/", response_model=List[UserResponse])
 def get_users(db: Session = Depends(get_db)):
-    data = db.query(user_model.UserModel).all()
-    return data
-
-# Registro de Usuario
-@router.post("/register")
-def create_user(user: UserRegister, db: Session = Depends(get_db)):
-
+    """Obtener todos los usuarios"""
     try:
-        user_data = user.model_dump()
+        users = db.query(user_model.UserModel).all()
+        return users
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error al obtener usuarios"
+        )
 
+@router.post("/register", status_code=status.HTTP_201_CREATED)
+def create_user(user: UserRegister, db: Session = Depends(get_db)):
+    """Registrar nuevo usuario"""
+    try:
+        # Verificar si el usuario ya existe
+        existing_user = db.query(user_model.UserModel).filter(
+            (user_model.UserModel.email == user.email) | 
+            (user_model.UserModel.username == user.username)
+        ).first()
+        
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="El email o username ya están registrados"
+            )
+
+        # Crear nuevo usuario
         new_user = user_model.UserModel(
-            name = user_data["name"],
-            sername = user_data["username"],
-            email = user_data["email"],
-            password = hash_password(user_data["password"])
+            name=user.name,
+            username=user.username,  # CORREGIDO: era 'sername'
+            email=user.email,
+            password=hash_password(user.password)
         )
 
         db.add(new_user)
@@ -37,56 +54,31 @@ def create_user(user: UserRegister, db: Session = Depends(get_db)):
         db.refresh(new_user)
 
         return {
-        "mensaje": "Usuario creado correctamente",
-        "usuario": {
-            "id": new_user.id,
-            "name": new_user.name,
-            "username": new_user.username,
-            "email": new_user.email,
-            "status": new_user.status
+            "message": "Usuario creado correctamente",
+            "user": {
+                "id": new_user.id,
+                "name": new_user.name,
+                "username": new_user.username,
+                "email": new_user.email,
+                "status": new_user.status
             }
         }
+        
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Error de integridad en la base de datos"
+        )
     except Exception as e:
         db.rollback()
-        raise
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error interno del servidor: {str(e)}"
+        )
 
-"""#Encontrar Usuario por ID
-@router.get("/{user_id}")   
-def obtener_usuario_por_id(user_id: str):
-    for user in usuarios:
-        if user["id"] == user_id:
-            return "Usuario encontrado EXISTOSAMENTE", {"user": user}
-    return {"error": "Usuario no encontrado"}
-
-#Crear Usuario
-@router.post("/")
-def crear_usuario(user: User)-> dict:
-    user_info = user.model_dump()
-    usuarios.routerend(user_info)
-    print(user_info)
-    return {"Response": "The user has been created successfully"}
-
-
-#Eliminar Usuario por ID
-@router.delete("/{user_id}")
-def eliminar_usuario(user_id: str):
-    for index, user in enumerate(usuarios):
-        if user["id"] == user_id:
-            usuarios.pop(index)
-            return {"respuesta": "Usuario eliminado exitosamente"}
-    return {"error": "Usuario no encontrado"}
-
-#Actualizar Usuario por ID
-@router.put("/{user_id}")
-def actualizar_usuario(user_id: str, updated_user: User):
-    for index, user in enumerate(usuarios):
-        if user["id"] == user_id:
-            usuarios[index]["id"] = updated_user.model_dump()["id"]
-            usuarios[index]["name"] = updated_user.model_dump()["name"]
-            usuarios[index]["lastname"] = updated_user.model_dump()["lastname"]
-            usuarios[index]["age"] = updated_user.model_dump()["age"]
-            usuarios[index]["adress"] = updated_user.model_dump()["adress"]
-            usuarios[index]["phone_number"] = updated_user.model_dump()["phone_number"]
-            return {"respuesta": "Usuario actualizado exitosamente"}
-    return {"error": "Usuario no encontrado"}
-"""
+@router.post("/login")
+def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
+    """Login de usuario"""
+    # Implementaremos esto después
+    pass

@@ -10,8 +10,7 @@ class UserRegister(BaseModel):
     password: str
 
 class UserLogin(BaseModel):
-    username: Optional[str] = None
-    email: Optional[EmailStr] = None
+    email: EmailStr
     password: str
 
 class UserResponse(BaseModel):

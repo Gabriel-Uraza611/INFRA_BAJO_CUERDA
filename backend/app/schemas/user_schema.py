@@ -18,7 +18,7 @@ class UserResponse(BaseModel):
     name: str
     username: str
     email: EmailStr
-    creation_date: datetime
+    status: bool
 
     class Config:
         from_attributes = True  # Pydantic v2

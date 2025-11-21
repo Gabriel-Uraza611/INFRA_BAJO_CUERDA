@@ -1,23 +1,56 @@
-from fastapi import APIRouter,Depends
-from schemas import User
-from db.database import get_db
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from db import models
-usuarios = []
+from app.core.security import hash_password
+from app.db.models import user_model
+from app.schemas.user_schema import UserRegister, UserLogin, UserResponse
+from app.db.database import get_db
+from typing import List
+
 
 router = APIRouter(
     prefix="/user",
-    tags=[" Users"]
+    tags=["Users"]
 )
 
+# Obtener Usuarios en la db
+@router.get("/get_users", response_model=List[UserResponse])
+def get_users(db: Session = Depends(get_db)):
+    data = db.query(user_model.UserModel).all()
+    return data
 
-@router.get("/")
-def obtener_usuarios(db: Session = Depends(get_db)):
-    data = db.query(models.User).all()
-    print(data)
-    return usuarios
+# Registro de Usuario
+@router.post("/register")
+def create_user(user: UserRegister, db: Session = Depends(get_db)):
 
-#Encontrar Usuario por ID
+    try:
+        user_data = user.model_dump()
+
+        new_user = user_model.UserModel(
+            name = user_data["name"],
+            sername = user_data["username"],
+            email = user_data["email"],
+            password = hash_password(user_data["password"])
+        )
+
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+
+        return {
+        "mensaje": "Usuario creado correctamente",
+        "usuario": {
+            "id": new_user.id,
+            "name": new_user.name,
+            "username": new_user.username,
+            "email": new_user.email,
+            "status": new_user.status
+            }
+        }
+    except Exception as e:
+        db.rollback()
+        raise
+
+"""#Encontrar Usuario por ID
 @router.get("/{user_id}")   
 def obtener_usuario_por_id(user_id: str):
     for user in usuarios:
@@ -56,3 +89,4 @@ def actualizar_usuario(user_id: str, updated_user: User):
             usuarios[index]["phone_number"] = updated_user.model_dump()["phone_number"]
             return {"respuesta": "Usuario actualizado exitosamente"}
     return {"error": "Usuario no encontrado"}
+"""

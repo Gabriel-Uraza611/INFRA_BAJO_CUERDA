@@ -21,32 +21,35 @@ def get_users(db: Session = Depends(get_db)):
 # Registro de Usuario
 @router.post("/register")
 def create_user(user: UserRegister, db: Session = Depends(get_db)):
-    user_data = user.model_dump()
-    new_user = user_model.UserModel(
-        name = user_data["name"],
-        username = user_data["username"],
-        email = user_data["email"],
-        password = hash_password(user_data["password"])
-    )
 
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+    try:
+        user_data = user.model_dump()
 
-    return {
+        new_user = user_model.UserModel(
+            name = user_data["name"],
+            sername = user_data["username"],
+            email = user_data["email"],
+            password = hash_password(user_data["password"])
+        )
+
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+
+        return {
         "mensaje": "Usuario creado correctamente",
         "usuario": {
             "id": new_user.id,
             "name": new_user.name,
             "username": new_user.username,
-            "email": new_user.email
-        },
-        "status": "ok"
-    }
+            "email": new_user.email,
+            "status": new_user.status
+            }
+        }
+    except Exception as e:
+        db.rollback()
+        raise
 
-
-
-    
 """#Encontrar Usuario por ID
 @router.get("/{user_id}")   
 def obtener_usuario_por_id(user_id: str):

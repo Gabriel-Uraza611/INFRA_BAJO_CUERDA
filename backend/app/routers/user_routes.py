@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from app.core.security import hash_password
+from app.core.security import hash_password, verify_password  # ✅ Añadir verify_password
 from app.db.models import user_model
 from app.schemas.user_schema import UserRegister, UserLogin, UserResponse
 from app.db.database import get_db
@@ -44,7 +44,7 @@ def create_user(user: UserRegister, db: Session = Depends(get_db)):
         # Crear nuevo usuario
         new_user = user_model.UserModel(
             name=user.name,
-            username=user.username,  # CORREGIDO: era 'sername'
+            username=user.username,
             email=user.email,
             password=hash_password(user.password)
         )
@@ -79,6 +79,42 @@ def create_user(user: UserRegister, db: Session = Depends(get_db)):
 
 @router.post("/login")
 def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
-    """Login de usuario"""
-    # Implementaremos esto después
-    pass
+    """Login de usuario con verificación de contraseña"""
+    try:
+        user = db.query(user_model.UserModel).filter(
+            user_model.UserModel.email == credentials.email
+        ).first()
+        
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Usuario no encontrado"
+            )
+        
+        # ✅ VERIFICAR CONTRASEÑA (implementación real)
+        if not verify_password(credentials.password, user.password):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Contraseña incorrecta"
+            )
+        
+        # Por ahora retornamos el usuario directamente
+        # Más adelante implementaremos JWT
+        return {
+            "message": "Login exitoso",
+            "user": {
+                "id": user.id,
+                "name": user.name,
+                "username": user.username,
+                "email": user.email
+            },
+            "token": "token-simulado-por-ahora"  # Temporal
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error en el login: {str(e)}"
+        )

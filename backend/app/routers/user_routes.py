@@ -25,19 +25,14 @@ def get_users(db: Session = Depends(get_db)):
             detail="Error al obtener usuarios"
         )
 
-@router.post("/register", status_code=status.HTTP_201_CREATED, response_model=dict)
+@router.post("/register", status_code=status.HTTP_201_CREATED)
 def create_user(user: UserRegister, db: Session = Depends(get_db)):
     """Registrar nuevo usuario"""
     try:
-        # Las validaciones ahora están en el schema, pero mantenemos algunas aquí
-        clean_name = user.name
-        clean_username = user.username
-        clean_email = user.email
-
         # Verificar si el usuario ya existe
         existing_user = db.query(user_model.UserModel).filter(
-            (user_model.UserModel.email == clean_email) | 
-            (user_model.UserModel.username == clean_username)
+            (user_model.UserModel.email == user.email) | 
+            (user_model.UserModel.username == user.username)
         ).first()
         
         if existing_user:
@@ -48,9 +43,9 @@ def create_user(user: UserRegister, db: Session = Depends(get_db)):
 
         # Crear nuevo usuario
         new_user = user_model.UserModel(
-            name=clean_name,
-            username=clean_username,
-            email=clean_email,
+            name=user.name,
+            username=user.username,
+            email=user.email,
             password=hash_password(user.password)
         )
 
@@ -58,12 +53,12 @@ def create_user(user: UserRegister, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(new_user)
 
-        # ✅ CORREGIDO: Usar UserResponse para serialización consistente
-        user_response = UserResponse.from_orm(new_user)
+        # ✅ ACTUALIZADO: model_dump() en lugar de dict()
+        user_response = UserResponse.model_validate(new_user)
         
         return {
             "message": "Usuario creado correctamente",
-            "user": user_response.dict()
+            "user": user_response.model_dump()
         }
         
     except HTTPException:
@@ -81,70 +76,10 @@ def create_user(user: UserRegister, db: Session = Depends(get_db)):
             detail=f"Error interno del servidor: {str(e)}"
         )
 
-@router.post("/login", response_model=dict)
-def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
-    """Login de usuario con verificación de contraseña"""
-    try:
-        if not credentials.email or not credentials.password:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Email y contraseña son requeridos"
-            )
-            
-        clean_email = credentials.email
-            
-        user = db.query(user_model.UserModel).filter(
-            user_model.UserModel.email == clean_email
-        ).first()
-        
-        if not user:
-            # ✅ MEJORADO: Mensaje genérico por seguridad
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Credenciales inválidas"
-            )
-        
-        # ✅ VERIFICAR CONTRASEÑA
-        if not verify_password(credentials.password, user.password):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Credenciales inválidas"
-            )
-        
-        # ✅ CORREGIDO: Usar UserResponse para consistencia
-        user_response = UserResponse.from_orm(user)
-        
-        return {
-            "message": "Login exitoso",
-            "user": user_response.dict(),
-            "token": "token-simulado-por-ahora"
-        }
-    
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error en el login: {str(e)}"
-        )
-
-@router.get("/", response_model=List[UserResponse])
-def get_users(db: Session = Depends(get_db)):
-    """Obtener todos los usuarios"""
-    try:
-        users = db.query(user_model.UserModel).all()
-        return users  # ✅ Esto ya funciona bien con response_model
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error al obtener usuarios"
-        )
-
 @router.post("/login")
 def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
     """Login de usuario con verificación de contraseña"""
     try:
-        # ✅ VALIDACIONES BÁSICAS
         if not credentials.email or not credentials.password:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -159,25 +94,22 @@ def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
         
         if not user:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Usuario no encontrado"
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Credenciales inválidas"
             )
         
-        # ✅ VERIFICAR CONTRASEÑA
         if not verify_password(credentials.password, user.password):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Contraseña incorrecta"
+                detail="Credenciales inválidas"
             )
+        
+        # ✅ ACTUALIZADO: model_dump() en lugar de dict()
+        user_response = UserResponse.model_validate(user)
         
         return {
             "message": "Login exitoso",
-            "user": {
-                "id": user.id,
-                "name": user.name,
-                "username": user.username,
-                "email": user.email
-            },
+            "user": user_response.model_dump(),
             "token": "token-simulado-por-ahora"
         }
     

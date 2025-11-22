@@ -14,5 +14,5 @@ class UserModel(Base):
     creation_date = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     status = Column(Boolean, default=True)
 
-    # relación con notas
-    notes = relationship("NoteModel", back_populates="user")
+    # ✅ CORREGIR RELACIÓN CON NOTAS
+    notes = relationship("NoteModel", back_populates="user", cascade="all, delete-orphan")

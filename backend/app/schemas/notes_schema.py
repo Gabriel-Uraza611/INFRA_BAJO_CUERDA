@@ -9,12 +9,24 @@ class StatusEnum(str, Enum):
     archived = "archived"
 
 class NoteCreate(BaseModel):
-    title: str
-    content: str
-    color: str
-    status: StatusEnum
-    posx: float
-    posy: float
+    title: str  # ✅ QUITAR 'id' - se genera automáticamente
+    content: Optional[str] = None  # ✅ Hacer opcional
+    color: str = "#ffffff"  # ✅ Valor por defecto
+    status: StatusEnum = StatusEnum.pending  # ✅ Valor por defecto
+    posx: float = 0  # ✅ Valor por defecto
+    posy: float = 0  # ✅ Valor por defecto
+    user_id: int  # ✅ AÑADIR user_id que es requerido
+    # ✅ QUITAR creation_date - se genera automáticamente
+    # ✅ QUITAR updated_at - no existe en el modelo
+
+    @field_validator('title')
+    @classmethod
+    def validate_title(cls, v):
+        if not v or not v.strip():
+            raise ValueError('El título es requerido')
+        if len(v.strip()) > 100:
+            raise ValueError('El título no puede tener más de 100 caracteres')
+        return v.strip()
 
     @field_validator('color')
     @classmethod
@@ -35,6 +47,16 @@ class NoteUpdate(BaseModel):
     posx: Optional[float] = None
     posy: Optional[float] = None
 
+    @field_validator('title')
+    @classmethod
+    def validate_title(cls, v):
+        if v is not None:
+            if not v.strip():
+                raise ValueError('El título no puede estar vacío')
+            if len(v.strip()) > 100:
+                raise ValueError('El título no puede tener más de 100 caracteres')
+        return v
+
     @field_validator('color')
     @classmethod
     def validate_color(cls, v):
@@ -50,7 +72,7 @@ class NoteUpdate(BaseModel):
 class NoteResponse(BaseModel):
     id: int
     title: str
-    content: str
+    content: Optional[str]  # ✅ Hacer opcional
     color: str
     status: StatusEnum
     posx: float

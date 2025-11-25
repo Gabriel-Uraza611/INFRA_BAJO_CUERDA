@@ -15,7 +15,7 @@ class AuthManager {
 
     checkAuthentication() {
         if (Utils.isAuthenticated()) {
-            window.location.href = 'dashboard.html';
+            window.location.href = 'main.html';
         }
     }
 
@@ -119,7 +119,7 @@ class AuthManager {
                 Utils.showMessage(`¡Bienvenido ${response.user.name}!`, 'success');
                 
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = 'main.html';
                 }, 1500);
             } else {
                 throw new Error('Respuesta del servidor inválida');

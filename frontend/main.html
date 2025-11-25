@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablero de Notas</title>
+    <link rel="stylesheet" href="css/boardstyle.css">
+</head>
+<body>
+    <div class="board-wrapper" id="boardWrapper">
+        <div class="board-container" id="boardContainer">
+            <div class="board">
+                <!-- Marcos -->
+                <div class="frame top"></div>
+                <div class="frame bottom"></div>
+                <div class="frame left"></div>
+                <div class="frame right"></div>
+                
+                <!-- Esquinas metálicas -->
+                <div class="corner top-left"></div>
+                <div class="corner top-right"></div>
+                <div class="corner bottom-left"></div>
+                <div class="corner bottom-right"></div>
+                
+                <!-- Superficie del tablero donde se pegarán los post-its -->
+                <div class="board-surface" id="boardSurface">
+                    <!-- Aquí se agregarán los post-its dinámicamente -->
+                </div>
+                
+                <!-- Controles de redimensionamiento -->
+                <div class="resize-handle resize-right" id="resizeRight"></div>
+                <div class="resize-handle resize-bottom" id="resizeBottom"></div>
+                <div class="resize-handle resize-corner" id="resizeCorner"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/resizeboard.js"></script>
+</body>
+</html>

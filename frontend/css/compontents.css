@@ -1,0 +1,81 @@
+/* ============================================================
+   BOTÓN "Agregar Post-it" estilo Figma (FULL CSS, sin imágenes)
+   ============================================================ */
+
+   .postit-add {
+    position: fixed;
+    left: 50%;
+    bottom: 25px;
+    transform: translateX(-50%);
+    
+    width: 100px;
+    height: 100px;
+    border-radius: 6px;
+
+    /* Degradado estilo Figma */
+    background: linear-gradient(#fff8b4, #f3e283);
+
+    /* Borde tipo Figma */
+    border: 1px solid rgba(0, 0, 0, 0.08);
+
+    /* Sombra suave */
+    box-shadow: 0px 6px 18px rgba(0,0,0,0.25);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    font-family: "Inter", sans-serif;
+    text-align: center;
+
+    cursor: pointer;
+    user-select: none;
+
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+
+    z-index: 999;
+}
+
+/* animación al pasar el mouse */
+.postit-add:hover {
+    transform: translateX(-50%) scale(1.04);
+    box-shadow: 0px 10px 24px rgba(0,0,0,0.28);
+}
+
+/* animación al hacer click */
+.postit-add:active {
+    transform: translateX(-50%) scale(0.97);
+}
+
+/* texto grande "+" */
+.postit-add .plus {
+    display: block;
+    margin-bottom: 6px;
+    color: #7d5a00;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+/* texto inferior */
+.postit-add .text {
+    font-size: 11px;
+    color: #7d5a00;
+    line-height: 12px;
+}
+
+/* animación al aparecer (opcional) */
+.postit-add {
+    animation: popPostit 0.25s ease-out;
+}
+
+@keyframes popPostit {
+    from {
+        transform: translateX(-50%) scale(0.6);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+    }
+}

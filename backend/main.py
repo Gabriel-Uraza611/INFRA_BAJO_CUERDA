@@ -10,9 +10,9 @@ backend_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(backend_dir))
 
 # Importar modelos para crear tablas
-from app.db.models import user_model, notes_model  # noqa: F401
-from app.routers import user_routes, notes_routes
-from app.db.database import Base, engine
+from backend.db.models import user_model, notes_model  # noqa: F401
+from backend.routers import user_routes, notes_routes
+from backend.db.database import Base, engine
 
 def create_tables():
     Base.metadata.create_all(bind=engine)
@@ -48,4 +48,4 @@ def health_check():
 
 if __name__ == "__main__":
     # Ejecutar explícitamente en 127.0.0.1:8000 para evitar ambigüedades IPv4/IPv6
-    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("backend.main:app", host="127.0.0.1", port=8000, reload=True)

@@ -2,10 +2,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from app.core.security import hash_password, verify_password
-from app.db.models import user_model
-from app.schemas.user_schema import UserRegister, UserLogin, UserResponse
-from app.db.database import get_db
+from backend.core.security import hash_password, verify_password
+from backend.db.models import user_model
+from backend.schemas.user_schema import UserRegister, UserLogin, UserResponse
+from backend.db.database import get_db
 from typing import List
 
 router = APIRouter(

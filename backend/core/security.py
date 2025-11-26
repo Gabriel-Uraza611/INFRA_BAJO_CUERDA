@@ -1,4 +1,3 @@
-# backend/app/core/security.py
 import hashlib
 import secrets
 from typing import Union

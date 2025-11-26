@@ -35,6 +35,31 @@
         </div>
     </div>
 
+    <<div class="note-modal" id="noteModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <h3>Editar Nota</h3>
+            <form id="noteForm">
+                <input type="hidden" id="noteId">
+                
+                <label for="noteTitleInput">Título:</label>
+                <input type="text" id="noteTitleInput" maxlength="255" required>
+                
+                <label for="noteContentInput">Contenido:</label>
+                <textarea id="noteContentInput"></textarea>
+                
+                <label for="noteColorInput">Color:</label>
+                <input type="color" id="noteColorInput" value="#fff8b4">
+                
+                <div class="modal-actions">
+                    <button type="submit" id="saveNoteButton">Guardar</button>
+                    <button type="button" id="deleteNoteButton" class="delete-btn">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <script src="js/resizeboard.js"></script>
+    <script type="module" src="js/notes.js"></script> 
 </body>
 </html>
+

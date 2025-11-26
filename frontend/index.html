@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes CRUD - Iniciar Sesión</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="logo">📝 NotesBoard</h1>
+            <p class="tagline">Organiza tus ideas de forma simple</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="auth-container">
+                <!-- Tabs para Login/Registro -->
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="login">Iniciar Sesión</button>
+                    <button class="tab-btn" data-tab="register">Registrarse</button>
+                </div>
+
+                <!-- Formulario de Login -->
+                <form id="loginForm" class="auth-form active">
+                    <div class="form-group">
+                        <label for="loginEmail">Email:</label>
+                        <input 
+                            type="email" 
+                            id="loginEmail" 
+                            name="email" 
+                            required 
+                            placeholder="tu@email.com"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword">Contraseña:</label>
+                        <input 
+                            type="password" 
+                            id="loginPassword" 
+                            name="password" 
+                            required 
+                            placeholder="••••••••"
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">
+                        Iniciar Sesión
+                    </button>
+
+                    <div class="form-footer">
+                        <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+                    </div>
+                </form>
+
+                <!-- Formulario de Registro -->
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="registerName">Nombre completo:</label>
+                        <input 
+                            type="text" 
+                            id="registerName" 
+                            name="name" 
+                            required 
+                            placeholder="Juan Pérez"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerUsername">Usuario:</label>
+                        <input 
+                            type="text" 
+                            id="registerUsername" 
+                            name="username" 
+                            required 
+                            placeholder="juanperez"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerEmail">Email:</label>
+                        <input 
+                            type="email" 
+                            id="registerEmail" 
+                            name="email" 
+                            required 
+                            placeholder="tu@email.com"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="registerPassword">Contraseña:</label>
+                        <input 
+                            type="password" 
+                            id="registerPassword" 
+                            name="password" 
+                            required 
+                            placeholder="••••••••"
+                            minlength="6"
+                        >
+                        <small class="password-hint">Mínimo 6 caracteres</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerConfirmPassword">Confirmar Contraseña:</label>
+                        <input 
+                            type="password" 
+                            id="registerConfirmPassword" 
+                            name="confirmPassword" 
+                            required 
+                            placeholder="••••••••"
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-full">
+                        Crear Cuenta
+                    </button>
+                </form>
+
+                <!-- Mensajes de error/éxito -->
+                <div id="messageContainer" class="message-container"></div>
+            </div>
+
+            <!-- Demo Preview -->
+            <div class="demo-preview">
+                <h3>Organiza tus notas de forma visual</h3>
+                <div class="notes-preview">
+                    <div class="preview-note" style="background-color: #ffeb3b; top: 20px; left: 30px;">
+                        <div class="note-title">Ideas Proyecto</div>
+                        <div class="note-content">Investigar tecnologías...</div>
+                    </div>
+                    <div class="preview-note" style="background-color: #90caf9; top: 80px; left: 100px;">
+                        <div class="note-title">Compras</div>
+                        <div class="note-content">Leche, pan, frutas...</div>
+                    </div>
+                    <div class="preview-note" style="background-color: #a5d6a7; top: 150px; left: 50px;">
+                        <div class="note-title">Recordatorio</div>
+                        <div class="note-content">Reunión a las 15:00</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

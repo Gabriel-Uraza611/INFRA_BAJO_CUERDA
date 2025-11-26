@@ -1,0 +1,11 @@
+/* base.css - reset y variables */
+:root{
+    --font-main: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+    --postit-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    --postit-border: rgba(0,0,0,0.06);
+  }
+  
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;font-family:var(--font-main);background:#f6f6f6}
+  #tablero{width:100vw;height:100vh;position:relative;overflow:hidden}
+  

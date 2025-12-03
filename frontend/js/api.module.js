@@ -1,4 +1,4 @@
-// js/api.js
+// js/api.module.js
 
 class API {
     // Usar 127.0.0.1 evita ambigüedades IPv4/IPv6 (evita conflictos con otros servidores)
@@ -146,5 +146,4 @@ class API {
     }
 }
 
-// Mantener API como global para scripts no modularizados (auth.js, etc.)
-window.API = API;
+export default API;

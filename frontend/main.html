@@ -35,6 +35,21 @@
         </div>
     </div>
 
+    <script src="js/utils.js"></script>
+    <script type="module" src="js/notes.js"></script>
     <script src="js/resizeboard.js"></script>
+    <!-- Modal de confirmación personalizado -->
+    <div id="confirmModal" class="confirm-modal" aria-hidden="true">
+        <div class="confirm-modal-backdrop"></div>
+        <div class="confirm-modal-panel" role="dialog" aria-modal="true">
+            <div class="confirm-modal-body">
+                <p id="confirmModalMessage">¿Confirmas esta acción?</p>
+            </div>
+            <div class="confirm-modal-actions">
+                <button id="confirmCancel" class="btn btn-secondary">Cancelar</button>
+                <button id="confirmOk" class="btn btn-primary">Confirmar</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

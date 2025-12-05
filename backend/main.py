@@ -6,8 +6,9 @@ import sys
 from pathlib import Path
 
 # Configurar path
-backend_dir = Path(__file__).parent.parent
+backend_dir = Path(__file__).parent
 sys.path.insert(0, str(backend_dir))
+
 
 # Importar modelos para crear tablas
 from backend.db.models import user_model, notes_model  # noqa: F401

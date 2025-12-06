@@ -1,4 +1,4 @@
-# backend/app/main.py
+ # backend/app/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
@@ -11,9 +11,9 @@ sys.path.insert(0, str(backend_dir))
 
 
 # Importar modelos para crear tablas
-from backend.db.models import user_model, notes_model  # noqa: F401
-from backend.routers import user_routes, notes_routes
-from backend.db.database import Base, engine
+from db.models import user_model, notes_model  # noqa: F401
+from routers import user_routes, notes_routes
+from db.database import Base, engine
 
 def create_tables():
     Base.metadata.create_all(bind=engine)

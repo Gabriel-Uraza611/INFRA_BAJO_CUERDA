@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  backend:
+    image: infra_back            # use your built backend image name
+    # build: ./backend            # optionally uncomment to build from source
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - app_net
+
+  frontend:
+    image: infra_front           # use your built frontend image name
+    # build:
+    #   context: .
+    #   dockerfile: frontend/Dockerfile
+    ports:
+      - "8080:80"
+    networks:
+      - app_net
+
+networks:
+  app_net:
+    driver: bridge

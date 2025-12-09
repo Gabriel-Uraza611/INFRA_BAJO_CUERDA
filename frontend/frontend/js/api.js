@@ -2,7 +2,7 @@
 
 class API {
     // Usar 127.0.0.1 evita ambigüedades IPv4/IPv6 (evita conflictos con otros servidores)
-    static BASE_URL = 'http://127.0.0.1:8000';
+    static BASE_URL = 'api';
     
     // Headers comunes
     static getHeaders(includeAuth = true) {

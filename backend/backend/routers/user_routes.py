@@ -28,13 +28,13 @@ def get_users(db: Session = Depends(get_db)):
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 def create_user(user: UserRegister, db: Session = Depends(get_db)):
     """Registrar nuevo usuario"""
+    print(user)
     try:
         # Verificar si el usuario ya existe
         existing_user = db.query(user_model.UserModel).filter(
             (user_model.UserModel.email == user.email) | 
             (user_model.UserModel.username == user.username)
         ).first()
-        
         if existing_user:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -62,9 +62,11 @@ def create_user(user: UserRegister, db: Session = Depends(get_db)):
         }
         
     except HTTPException:
+        print(user)
         raise
     except IntegrityError:
         db.rollback()
+        print(user)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Error de integridad en la base de datos"

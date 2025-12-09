@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 TESTING = os.getenv("TESTING") == "1"
 
 # Base de datos real
-DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/crud"
+DATABASE_URL = "postgresql://postgres:postgres@database:5432/crud"
 
 # Base de datos de pruebas
 TEST_DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/crud_test"

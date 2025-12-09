@@ -3,8 +3,14 @@ FROM nginx:alpine
 
 WORKDIR /usr/share/nginx/html
 # Copy your static website files into the container
-COPY ./frontend/ .
 
+# Remove default nginx config
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copy nginx configuration FIRST
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+
+COPY ./frontend/ /usr/share/nginx/html/
 VOLUME ["usr/share/nginx/html"]
 # Expose port 80
 EXPOSE 80
